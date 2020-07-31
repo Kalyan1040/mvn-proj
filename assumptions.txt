@@ -1,0 +1,2 @@
+1. A bucket name S3_BUCKET_NAME has been created and accessible with AWS_ACCESS_KEY and AWS_SECRET_KEY.
+2. Assume that we have circleCI org created for the github account.
