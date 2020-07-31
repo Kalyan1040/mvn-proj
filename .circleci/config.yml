@@ -12,7 +12,7 @@ commands:
         default: -DskipTests
     steps:
       - run:
-         name: Build JAR
+          name: Build JAR
           command: |
             source $BASH_ENV
             if [ "$CIRCLE_BRANCH" == "master" ]
