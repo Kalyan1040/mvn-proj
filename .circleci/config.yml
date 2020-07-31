@@ -9,7 +9,7 @@ jobs:
       - image: maven
     steps:
       - checkout
-      - run: mvn clean package --settings .circleci.settings.xml
+      - run: mvn clean package -DskipTests --settings .circleci.settings.xml
       - run: mvn test -DfailIfNoTests=false --settings .circleci.settings.xml
       - run: mvn -s .circleci.settings.xml -DskipTests deploy
   
