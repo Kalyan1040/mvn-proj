@@ -3,35 +3,18 @@ version: 2.1
 orbs:
   maven: drift/maven@0.1.7
 
-commands:
-  build:
-    parameters:
-      build-flags:
-        type: string
-        description: Flags for mvn package / mvn deploy
-        default: -DskipTests
+jobs:
+  maven:
+    docker:
+      - image: maven
     steps:
-      - run:
-          name: Build-artifact
-          command: |
-            source $BASH_ENV
-            if [ "$CIRCLE_BRANCH" == "master" ]
-               then mvn clean deploy << parameters.build-flags >> --settings .circleci.settings.xml
-              else mvn clean package << parameters.build-flags >> --settings .circleci.settings.xml
-            fi
-  run-tests:
-    steps:
-      - run:
-          name: Run Tests
-          command: |
-            TESTFILES=$(circleci tests glob "**/src/test/**/*.java" | circleci tests split --split-by=timings)
-            TESTFILES=$(echo $TESTFILES | sed -r -e 's/\s(\S+\/)+/,/g' | sed -r -e 's/^(\S+\/)+//g')
-            echo $TESTFILES
-            mvn -Dtest=${TESTFILES} test -DfailIfNoTests=false --settings .circleci.settings.xml
-  deploy:
-    steps:
-      - run: 
-          name: deploy
-          command: |
-            source $BASH_ENV
-            mvn -s .circleci.settings.xml -DskipTests deploy
+      - checkout
+      - run: mvn clean package --settings .circleci.settings.xml
+      - run: mvn test -DfailIfNoTests=false --settings .circleci.settings.xml
+      - run: mvn -s .circleci.settings.xml -DskipTests deploy
+  
+workflows:
+  version: 2
+  workflow:
+    jobs:
+      - maven
